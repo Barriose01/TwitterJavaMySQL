@@ -40,7 +40,8 @@ AS
 select p.id, u.nombre, p.publicacion, p.fecha
 FROM publicaciones as p
 inner join usuario as u
-on u.id = p.idUsuario;
+on u.id = p.idUsuario
+order by p.id desc;
 
 DROP PROCEDURE IF EXISTS verificarUsuario;
 DELIMITER &&
@@ -108,4 +109,5 @@ BEGIN
 	INSERT INTO publicacionesXhashtags(idPublicacion, idUsuario, hashtag)
     VALUES(idPost,idU,tag);
 END &&
+
 

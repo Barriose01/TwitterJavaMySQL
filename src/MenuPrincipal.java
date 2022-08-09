@@ -144,12 +144,14 @@ public class MenuPrincipal {
 		}
 	}
 	private void verTodosLosPosts() {
-		ArrayList<String> posts = q.verTodosLosPosts();
+		ArrayList<String> posts = q.verTodosLosPosts(); //En este caso, debido al orden en la base de datos,
+														//no es necesario hacerle el reverse()
 		if(posts.size() > 0) {
-			Collections.reverse(posts);
 			for(int i = 0; i < posts.size(); i+= 3) {
-				System.out.println("-" + posts.get(i + 2) + ": " + posts.get(i + 1) + ". Publicado en " 
-			+ posts.get(i));
+				
+				//						usuario				publicacion
+				System.out.println("-" + posts.get(i) + ": " + posts.get(i + 1) + ". Publicado en " 
+			+ posts.get(i + 2)); // fecha
 			}
 			
 		}else {
@@ -162,16 +164,16 @@ public class MenuPrincipal {
 		System.out.print("Ingrese el nombre del usuario que desea buscar para ver sus posts: ");
 		opcion = sc.nextLine().toLowerCase().strip();
 		if(!opcion.equals("q")) {
-			ArrayList<String> posts = q.buscarUsuarios(opcion); 
+			ArrayList<String> posts = q.buscarUsuarios(opcion); //Devuelve en orden. No hay necesidad de hacer
+																// un reverse()
 			if(posts.size() > 0) {
-				Collections.reverse(posts);
 				int contadorResultados = 0;
 				for(int i = 0; i < posts.size(); i +=3) {contadorResultados +=1;}
 				
 				System.out.println("\nResultados para '" + opcion + "': " + contadorResultados);
 				for(int i = 0; i < posts.size(); i +=3) {
-					System.out.println("-" + posts.get(i + 2) + ": " + posts.get(i + 1) + ". Publicado en " 
-					+ posts.get(i));
+					System.out.println("-" + posts.get(i) + ": " + posts.get(i + 1) + ". Publicado en " 
+					+ posts.get(i + 2));
 				}
 			}else {
 				System.out.println("\nNo se encontraron posts para el usuario '" + opcion + "'");
@@ -181,16 +183,13 @@ public class MenuPrincipal {
 	private void verTusPosts(String orden) {
 		ArrayList<String> posts = q.verTusPosts(this.usuario, orden);
 		if(posts.size() > 0) {
-			if(orden.equals("recientes")) {Collections.reverse(posts);} //Si queremos ver de mas nuevo a mas antiguo,
-																		//nos devolvera la lista al contrario,
-																		//por eso le hacemos un reverse
+			if(orden.equals("antiguos")) {Collections.reverse(posts);} 
 			int contadorResultados = 0;
 			for(int i = 0; i < posts.size(); i +=4) {contadorResultados +=1;}
-			
 			System.out.println("\nCantidad de posts realizados: " + contadorResultados);
 			for(int i = 0; i < posts.size(); i +=4) { //Son 4 columnas. El metodo devuelve la columna del id
-				System.out.println("-" + posts.get(i + 2) + ": " + posts.get(i + 1) + ". Publicado en " 
-				+ posts.get(i));
+				System.out.println("-" + posts.get(i + 1) + ": " + posts.get(i + 2) + ". Publicado en " 
+				+ posts.get(i + 3));
 			}
 		}else {
 			System.out.println("No has realizado ningun post");
@@ -200,19 +199,17 @@ public class MenuPrincipal {
 		while(true) {
 			ArrayList<String> posts = q.verTusPosts(this.usuario, "recientes");
 			ArrayList<String> listaID = new ArrayList<String>(); //Esta lista es para obtener todos los ID de las publicaciones
-			Collections.reverse(posts);
 			if(posts.size() > 0) {
 				listaID.clear(); //Si no lo limpio al comenzar, aumenta la lista mas adelante
 				System.out.println("Ingrese el indice de la publicacion que desea eliminar");
 				int fila = 0; //Representa la fila (o indice) de los posts que aparecen
 				for(int i = 0; i < posts.size(); i +=4) {
-					System.out.println("(" + fila + ") " + posts.get(i + 2) + ": " + posts.get(i + 1) 
-					+ ". Publicado en " + posts.get(i));
-					listaID.add(posts.get(i + 3)); //El id siempre nos aparecera a 3 posiciones despues de la primera columna
+					System.out.println("(" + fila + ") " + posts.get(i + 1) + ": " + posts.get(i + 2) 
+					+ ". Publicado en " + posts.get(i + 3));
+					listaID.add(posts.get(i)); //El id siempre nos aparecera como el primer campo luego de incrementar por 4
 					fila++;
 				}
 				System.out.println("(q): Volver");
-				Collections.reverse(posts); //Hago esto para que, al volver al loop, vuelva a quedar en orden
 				opcion = sc.nextLine().toLowerCase().strip();
 				if(opcion.equals("q")) {break;}
 				else {
